@@ -30,7 +30,7 @@
 ![leak](leak.png)
 
 
-**Step 4:** Have `Buy()` returns a chunk in `tcache_perthread_struct`, and overwrite the `tcache_entry` of the 0x220 list to `__free_hook`.
+**Step 4:** Have `Buy()` returns a chunk in `tcache_perthread_struct`, and overwrite the `tcache_entry` of the 0x220 list to `__free_hook`. (Note that we crafted so that [2] and [3] are shifted downward by 0x10 bytes because the pointers in `tps` point at the data, not the metadata)
 
 
 ![feng shui](fengshui.png)
@@ -45,13 +45,13 @@ See `solve.py`.
 
 ## More information
 ### About tcache_perthread_struct`
-```
+'''
 struct tcache_perthread_struct
 {
 	char counts[64];
 	tcache_entries *entries[64];
 }
-```
+'''
 - Located somewhere at the start of the heap.
 - `entries` is an array of linked list, one of each size.
 - `counts` is an array of the number of chunks in each linked list.
