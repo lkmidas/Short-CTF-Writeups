@@ -62,8 +62,8 @@ struct tcache_perthread_struct
 
 
 ### About __uflow()
-- Takes a FILE struct as a parameter.
-- If crafted correctly:
- - Calls `write(fp->_fileno, fp->_IO_write_base, fp->_IO_write_ptr - fp->_IO_write_base)` .
- - Calls `read(fp->_fileno, fp->_IO_buf_base, fp->_IO_buf_end - fp->_IO_buf_base)` .
+* Takes a FILE struct as a parameter.
+* If crafted correctly:
+ * Calls `write(fp->_fileno, fp->_IO_write_base, fp->_IO_write_ptr - fp->_IO_write_base)` .
+ * Calls `read(fp->_fileno, fp->_IO_buf_base, fp->_IO_buf_end - fp->_IO_buf_base)` .
 
