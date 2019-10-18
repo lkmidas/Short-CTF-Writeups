@@ -25,10 +25,16 @@
 - Fill the 0x1c0 and the 0x2f0 tcache bin.
 
 **Step 3:** Leak heap and libc (yellow part on the diagram is [1]'s buffer).
+
+
 ![leak](leak.png)
 
+
 **Step 4:** Have `Buy()` returns a chunk in `tcache_perthread_struct`, and overwrite the `tcache_entry` of the 0x220 list to `__free_hook`.
+
+
 ![feng shui](fengshui.png)
+
 
 **Step 5:** Overwrite `__free_hook` with `__uflow()` and call it on a fake carefully crafted FILE struct to leak stack and overwrite `__malloc_hook` with `gets()`.
 
