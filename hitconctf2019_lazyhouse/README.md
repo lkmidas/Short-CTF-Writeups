@@ -42,3 +42,27 @@
 
 ## Full exploit
 See `solve.py`.
+
+## More information
+### About tcache_perthread_struct`
+'''
+struct tcache_perthread_struct
+{
+	char counts[64];
+	tcache_entries *entries[64];
+}
+'''
+- Located somewhere at the start of the heap.
+- `entries` is an array of linked list, one of each size.
+- `counts` is an array of the number of chunks in each linked list.
+- Visually:
+
+
+![tcache](tcache.png)
+
+
+### About __uflow()
+- Takes a FILE struct as a parameter.
+- Calls `write(fp->_fileno, fp->_IO_write_base, fp->_IO_write_ptr - fp->_IO_write_base)` .
+- Calls `read(fp->_fileno, fp->_IO_buf_base, fp->_IO_buf_end - fp->_IO_buf_base)` .
+
