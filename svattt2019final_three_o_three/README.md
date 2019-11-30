@@ -17,7 +17,7 @@
 
 **Step 2:** Use the 1st write to overwrite `__free_hook` to `exit()`, again, `one_gadget` does not work.
 
-**Step 3:** Use the 2nd write to overwrite the pointer to `rtld_lock_default_unlock_recursive()` in `_rtld_global` (which is in the `ld` page right after libc) to `one_gadget`. This function will be called in `_dl_fini()`, which is called in `exit()`.
+**Step 3:** Use the 2nd write to overwrite the pointer to `rtld_lock_default_unlock_recursive()` in `_rtld_global` (which is in the `ld` page right after libc) to `one_gadget`. This function pointer will be called in `_dl_fini()`, which is called in `exit()`.
 
 **Step 4:** Use the 3rd write to pass a very long string to `scanf()`, which will cause it to call `free() -> exit() -> _dl_fini -> rtld_lock_default_unlock_recursive() -> one_gadget`. Only this method of calling `one_gadget` works remotely.
 
