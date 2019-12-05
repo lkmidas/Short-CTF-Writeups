@@ -5,6 +5,8 @@
 - This is a beginner-level ret2libc challenge.
 - I am this challenge's author.
 ## Analysis
+**(0)** The binary has no PIE.
+
 **(1)** The interpreter has 8 opcodes `RLPMOISE`, these have the same funcitonalities as `brainf*ck`'s opcodes.
 
 **(2)** The memory upper bound check  of opcode `R` is bigger than the actual memory's size -> out of bound.
