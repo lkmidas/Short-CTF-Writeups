@@ -14,7 +14,7 @@
 
 **(5)** In the save request functionality, the bound of the pin's index is not checked, leads to an arbitrary read and also a 4 bytes `****` write to its location.
 
-**(6)** In the send request functionality, you can pass a long string to `inet_aton()` using a hex number, then it will use `memcpy()` to copy a C string, but it's size is taken using C++ `size()`, this leads to a stack overflow.
+**(6)** In the send request functionality, you can pass a long string to `inet_aton()` using a hex number, then it will use `memcpy()` to copy a C string, but it's size is taken using C++ `size()`, this leads to a stack overflow if we insert a null byte.
 
 **(7)** The offset to libc and to `tls` from the mmaped region may be different on the server and locally.
 ## Exploit plan
@@ -24,9 +24,9 @@
 
 **Step 2:** Save a request without pin, then print request to get a libc leak.
 
-**Step 3:** Save 2 requests with the pin's index at the lower 4 bytes and upper 4 bytes of the memory cell contains global canary, overwrite it with `****`. Also, in the 2nd request, setup a long pin contains canary as `********` and `one_gadget` to overflow the stack.
+**Step 3:** Save 2 requests with the pin's index at the lower 4 bytes and upper 4 bytes of the memory cell contains global canary in `tls`, overwrite it with `****`. Also, in the 2nd request, setup a long pin contains the canary as `********` and `one_gadget` to overflow the stack.
 
-**Step 4:** Send the request, overwrite `send_req()`'s ret with `one_gadget` and get shell.
+**Step 4:** Send the request, overwrite `send_req()`'s return address with `one_gadget` and get shell.
 
 ## Full exploit
 See `solve.py`.
