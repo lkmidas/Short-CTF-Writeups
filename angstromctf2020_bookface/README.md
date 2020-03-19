@@ -4,9 +4,7 @@
 - The binary has: `Full RELRO`, `Canary found`, `NX enabled` and `PIE enabled`.  
 - The source code of the binary is given.
 - Libc version is 2.23.
-- Hints:
--- `sysctl vm.mmap_min_addr=0` was run on the host system. (more a reminder than a hint)
--- Brute forcing is not required.
+- Hints: `sysctl vm.mmap_min_addr=0` was run on the host system (more a reminder than a hint); Brute forcing is not required.
 
 ## Functionalities  
 
