@@ -4,7 +4,7 @@ Short writeups for some challenges (mostly pwnable) in various CTFs that I find 
 
 ## Current writeups
 | **CTF**      | **Year** | **Challenges**                                                                                                    | **Note**                                                |
-|--------------|----------|-------------------------------------------------------------------------------------------------------------------|---------------------------------------------------------|
+|--------------|----------|-------------------------------------------------------------------------------------------------------------------|---------------------------------------------------------|     
 | SECCON       | 2018     | [internet of seat](https://github.com/LKMDang/Short-CTF-Writeups/tree/master/seccon2018_internet_of_seat)         | IoT pwn                                                 |
 | SECCON       | 2019     | [remain](https://github.com/LKMDang/Short-CTF-Writeups/tree/master/seccon2019_remain)                             | Glibc 2.29 heap pwn                                     |
 | EfiensCTF    | 2019     | [interpretation](https://github.com/LKMDang/Short-CTF-Writeups/tree/master/efiensctf2019r2_interpretation)        | My challenge, simple interpreter                        |
@@ -18,3 +18,4 @@ Short writeups for some challenges (mostly pwnable) in various CTFs that I find 
 | TetCTF       | 2020     | [CalcConv](https://github.com/LKMDang/Short-CTF-Writeups/tree/master/tetctf2020_all_pwn/calcconv)                 | Leakage on file read, stack overflow                    |
 | TetCTF       | 2020     | [BabyARMshellcode](https://github.com/LKMDang/Short-CTF-Writeups/tree/master/tetctf2020_all_pwn/babyarmshellcode) | Shellcode, Linux file system, networking, format string |
 | AngstromCTF  | 2020     | [Bookface](https://github.com/LKMDang/Short-CTF-Writeups/tree/master/angstromctf2020_bookface)                    | Logic bug, NULL pointer deference                       |
+| ISITDTU      | 2020     | [rev02](https://github.com/LKMDang/Short-CTF-Writeups/tree/master/isitdtu2020_rev02)                              | NES reversing, 6502, z3                                 |
