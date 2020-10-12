@@ -12,7 +12,7 @@ Later, the author suggested on the competition's Discord channel a program to em
 - The input is stored at a 16 bytes buffer starting at address **0x300** in the memory space.
 - The only **7 valid input keys** on the keyboard are: `s`, `d`, `f` and the arrow buttons. They are also mapped into the memory in the following way: `{s:a, d:u, f:t, left:l, right:i, up:n, down:h}`.
 
-Using the info that the input buffer is at **0x300**, I then looked into the code to file the part of the code that access that buffer. That code started at address **0x9131**:
+Using the info that the input buffer is at **0x300**, I then looked into the code to find the part of it which access that buffer. That code started at address **0x9131**:
 ```
  00:9131:A2 00     LDX #$00
  00:9133:AD 00 03  LDA $0300
