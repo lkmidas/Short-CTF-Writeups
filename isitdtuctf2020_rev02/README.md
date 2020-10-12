@@ -15,13 +15,13 @@ Later, the author suggested on the competition's Discord channel a program to em
 Using the info that the input buffer is at **0x300**, I then looked into the code to file the part of the code that access that buffer. That code started at address **0x9131**:
 ```
  00:9131:A2 00     LDX #$00
- 00:9133:AD 00 03  LDA $0300 = #$74
+ 00:9133:AD 00 03  LDA $0300
  00:9136:18        CLC
- 00:9137:6D 01 03  ADC $0301 = #$75
+ 00:9137:6D 01 03  ADC $0301
  00:913A:90 02     BCC $913E
  00:913C:E8        INX
  00:913D:18        CLC
- 00:913E:6D 02 03  ADC $0302 = #$61
+ 00:913E:6D 02 03  ADC $0302
  00:9141:90 01     BCC $9144
  00:9143:E8        INX
  00:9144:E0 01     CPX #$01
