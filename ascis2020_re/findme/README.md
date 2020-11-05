@@ -4,7 +4,7 @@
 ## Analysis
 
 ### Step 1: Static analysis (IDA Pro)
-First off, I started to analyze the file statically. By looking at the `main` function, it is clear that this program reads an input password, then pass it to the checking function using the **Remote procedure call** (RPC) protocol, I knew this because the program makes calls to `RpcStringBindingComposeA`, `RpcBindingFromStringBindingA` and `NdrClientCall2` (although at the time, I knew nothing about RPC). 
+First off, I started to analyze the file statically. By looking at the `main` function, it is clear that this program reads an input password, then passes it to the checking function using the **Remote procedure call** (RPC) protocol, I knew this because the program makes calls to `RpcStringBindingComposeA`, `RpcBindingFromStringBindingA` and `NdrClientCall2` (although at the time, I knew nothing about RPC). 
 
 By reading the documentation from Microsoft about RPC and also doing some googling, I knew that this is a server - client protocol, and our program is acting as a client (RPC is always initiated by the client). Therefore, there must be a server running somewhere, but I couldn't find the part where the program initiates the server in `main`.
 
