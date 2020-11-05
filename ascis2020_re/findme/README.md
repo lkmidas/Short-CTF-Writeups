@@ -14,7 +14,7 @@ Initially, my suspect was that the server is initiated somewhere before `main`, 
 ### Step 3: Static analyzing the server (IDA Pro)
 I opened up the dll in IDA, there is a lot of functions, and most of the calls are (maybe) obfuscated in the way that they are called indirectly by some pointers in the data segment. Again, the client passes the password to the server using `NdrClientCall2`, one of the parameter of that function is a *MIDL-generated procedure format string*, which indicates what function will be called in the server. I did some googling to try and understand this parameter, but I didn't find much information, so I just looked at all the functions in the server dll one by one, and the most interesting function is the first function `sub_401000`, which only takes in 1 parameter and passes it to a lot of bitwise equations and finally returns a boolean value, and that seems likely to be the password checking function. 
 
-### Step 4: Solve the equations (z3)
+### Step 4: Solving the equations (z3)
 So then, I simply wrote a python script to solve the equations using `z3`, the checking process is pretty simple: it checks if the length of the password is 16, and then do a series of calculations that form 16 equations. The script is as follow:
 ```
 from z3 import BitVec, Solver
