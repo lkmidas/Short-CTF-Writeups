@@ -19,3 +19,5 @@ Short writeups for some challenges (mostly pwnable) in various CTFs that I find 
 | TetCTF       | 2020     | [BabyARMshellcode](https://github.com/LKMDang/Short-CTF-Writeups/tree/master/tetctf2020_all_pwn/babyarmshellcode) | Shellcode, Linux file system, networking, format string |
 | AngstromCTF  | 2020     | [Bookface](https://github.com/LKMDang/Short-CTF-Writeups/tree/master/angstromctf2020_bookface)                    | Logic bug, NULL pointer deference                       |
 | ISITDTU      | 2020     | [rev02](https://github.com/LKMDang/Short-CTF-Writeups/tree/master/isitdtuctf2020_rev02)                           | NES reversing, 6502, z3                                 |
+| ASCIS/SVATTT | 2020     | [findme](https://github.com/LKMDang/Short-CTF-Writeups/tree/master/ascis2020_re/findme)                           | PE, RPC, z3                                             |
+| ASCIS/SVATTT | 2020     | [Crypt](https://github.com/LKMDang/Short-CTF-Writeups/tree/master/ascis2020_re/Crypt)                             | ELF, C++, AES, large integer                           |
