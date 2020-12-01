@@ -21,3 +21,4 @@ Short writeups for some challenges (mostly pwnable) in various CTFs that I find 
 | ISITDTU      | 2020     | [rev02](https://github.com/LKMDang/Short-CTF-Writeups/tree/master/isitdtuctf2020_rev02)                           | NES reversing, 6502, z3                                 |
 | ASCIS/SVATTT | 2020     | [findme](https://github.com/LKMDang/Short-CTF-Writeups/tree/master/ascis2020_re/findme)                           | PE, RPC, z3                                             |
 | ASCIS/SVATTT | 2020     | [Crypt](https://github.com/LKMDang/Short-CTF-Writeups/tree/master/ascis2020_re/Crypt)                             | ELF, C++, AES, large integer                           |
+| ASCIS Final  | 2020     | [RWE](https://github.com/LKMDang/Short-CTF-Writeups/tree/master/ascis2020final_RWE)                               | ELF, VM                                                 |
