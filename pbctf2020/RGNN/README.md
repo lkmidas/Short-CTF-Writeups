@@ -5,4 +5,4 @@
 4. Second and third functions perform checks on input matrix's rows and columns.
 5. It checks for the existence of specific number sequences in the rows and columns, making this a `colored nonogram` solving problem.
 6. Final function prints the flag based on the correct nonogram.
-7. To solve the `nonogram`: using solver tools (for example `pynogram` - check `a.py`) or using z3 solver (author's solution - check `b.py`).
+7. To solve the `nonogram`: using nonogram solver tools (for example `pynogram` - check `a.py`) or using z3 solver (author's solution - check `b.py`).
