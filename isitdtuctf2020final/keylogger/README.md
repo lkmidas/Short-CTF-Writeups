@@ -5,6 +5,14 @@
 
 **Description:** `We are tracking a suspect in a gold robbery of 4 men, After a few days he had access to a public computer. We then analyzed that computer and found it a keylogger software that someone secretly installed earlier, Hope you can find out what the thief accessed, whom to contact, any information that could lead to evidence of the robbery. `
 
+**TL;DR:**
+1. Analyze `Launcher.exe` => Dump `XblCloud.dll` with `SpyStudio`.
+2. Analyze `capture.pcapng` => Get information about zip file, keylog and big TCP stream.
+3. Analyze `XblCloud.dll` => Parse keylogs => Not much information.
+4. Analyze `XblCloud.dll` again => Decrypt big TCP stream into screenshot => Get hint about on-screen keyboard (OSK).
+5. Get my own screenshot with OSK on it => Plot parsed mouse clicks => Get zip file password.
+6. Extract zip file, get flag.
+
 ## Analyzing Launcher.exe
 The `Launcher.exe` executable file throws an error when being executed, then it seems like nothing happens after that. So I started to reverse it statically using IDA. The flow is quite simple: it first throws a fake error about missing a DLL, then clones itself using the name `XblAuthenticator.exe`, then decrypts some data and saves it under the name `XblCloud.dll`, all the files created in this challenge are somehow related to XBox stuffs, but most likely they are just fake names. My teammates said that it also does something to the registry hive, but that information is unecessary for the solution. The most important thing then was to get the DLL file. I think it can be retrieved by reversing the decryption function and decrypting the data, but my teammate `@Edisc` used `SpyStudio` and dumped it out for me. So all I needed to do was to continue and analyze the DLL file and the traffic capture file.
 
@@ -38,20 +46,20 @@ Now let's take a look at the first sequence:
 ```
 0a 14 08 00 10 c2 a6 b6 c3 03 18 00 22 08 ff ff fe ca aa fa fe ca
 ```
-I could see there are two `0xcafe` bytes in this sequence, so this is likely the result from the XORing with `0xCAFEFAA` in the log of a mouse click. The first 3 bytes seem like a header of some sort. The fourth byte in these sequences gets incremented every sequence, starting from 0, so it must be the sequence number. The next 7 bytes are incremented a little bit after each sequence, so I assumed that they are the timestamp. For the next 3 bytes, I don't even know what they are. And finally the last 8 bytes are the encrypted X and Y coordinate of the cursor when the mouse is pressed. This way, I could already parse the mouse click sequences into sequence number, timestamp and coordinates:
+I could see there are two `0xcafe` bytes in this sequence, so this is likely the result from the XORing with `0xCAFEFAAA` in the log of a mouse click. The first 3 bytes seem like a header of some sort. The fourth byte in these sequences gets incremented every sequence, starting from 0, so it must be the sequence number. The next 7 bytes are incremented a little bit after each sequence, so I assumed that they are the timestamp. For the next 3 bytes, I don't even know what they are. And finally the last 8 bytes are the encrypted X and Y coordinate of the cursor when the mouse is pressed. This way, I could already parse the mouse click sequences into sequence number, timestamp and coordinates:
 ```python
 def parse(data):
-	length = u32(data[0:4])
-	data = data[4:]
-	i = 0
-	while i < length:
-		if data[i:i+3] == b"\x0a\x14\x08":
-			seq_num = data[i+3]
-			timestamp = u64(data[i+4:i+11] + b"\0")
-			point_x = u32(data[i+14:i+18]) ^ 0xCAFEFAAA
-			point_y = u32(data[i+18:i+22]) ^ 0xCAFEFAAA
-			print("{} \t {} \t Mouse x = {}, y = {}".format(seq_num, timestamp, point_x, point_y))
-			i += 22
+    length = u32(data[0:4])
+    data = data[4:]
+    i = 0
+    while i < length:
+        if data[i:i+3] == b"\x0a\x14\x08":
+            seq_num = data[i+3]
+            timestamp = u64(data[i+4:i+11] + b"\0")
+            point_x = u32(data[i+14:i+18]) ^ 0xCAFEFAAA
+            point_y = u32(data[i+18:i+22]) ^ 0xCAFEFAAA
+            print("{} \t {} \t Mouse x = {}, y = {}".format(seq_num, timestamp, point_x, point_y))
+            i += 22
 ```
 Let's take a look at a shorter sequence that comes later in the TCP stream:
 ```
@@ -59,46 +67,46 @@ Let's take a look at a shorter sequence that comes later in the TCP stream:
 ```
 Again, I assumed the first 3 bytes are header, the fourth byte is sequence number, the next 7 are timestamp, the next 3 is unknown. For the last 2, by trial and error, I knew that the first of them is the encoded key code, and the second is unknown and unimportant. The code to parse these sequences:
 ```python
-	elif data[i:i+3] == b"\x0a\x0e\x08":
-		seq_num = data[i+3]
-		timestamp = u64(data[i+4:i+11] + b"\0")
-		key_enc = data[i+14]
-		if key_enc >= 0x96  and key_enc <= 0x9f:
-			key = chr(key_enc - 0x66)
-		elif key_enc >= 0xbb  and key_enc <= 0xe0:
-			key = chr(key_enc + 0x7a - 0x100)
-		elif key_enc == 0x86:
-			key = " "
-		else:
-			key = "unknown"
-		print("{} \t {} \t Key = {}".format(seq_num, timestamp, key))
-		i += 16
+    elif data[i:i+3] == b"\x0a\x0e\x08":
+        seq_num = data[i+3]
+        timestamp = u64(data[i+4:i+11] + b"\0")
+        key_enc = data[i+14]
+        if key_enc >= 0x96  and key_enc <= 0x9f:
+            key = chr(key_enc - 0x66)
+        elif key_enc >= 0xbb  and key_enc <= 0xe0:
+            key = chr(key_enc + 0x7a - 0x100)
+        elif key_enc == 0x86:
+            key = " "
+        else:
+            key = "unknown"
+        print("{} \t {} \t Key = {}".format(seq_num, timestamp, key))
+        i += 16
 ```
 By using these 2 functions to parse the streams that contain the keylog, it failed at some later sequences because their headers are different: `\x0a\x0f\x08` and `\x0a\x15\x08`. But it is actually quite simple: they are still the sequences for key presses and mouse clicks, but because the sequence number is greater than 255 then, they need one more byte to represent it. These two can be parsed using the following code:
 ```python
-	elif data[i:i+3] == b"\x0a\x0f\x08":
-		seq_num = u16(data[i+3:i+5]) - 0x100
-		timestamp = u64(data[i+5:i+12] + b'\0')
-		key_enc = data[i+15]
-		if key_enc >= 0x96  and key_enc <= 0x9f:
-			key = chr(key_enc - 0x66)
-		elif key_enc >= 0xbb  and key_enc <= 0xe0:
-			key = chr(key_enc + 0x7a - 0x100)
-		elif key_enc == 0x86:
-			key = " "
-		else:
-			key = "unknown"
-		print("{} \t {} \t Key = {}".format(seq_num, timestamp, key))
-		i += 17
+    elif data[i:i+3] == b"\x0a\x0f\x08":
+        seq_num = u16(data[i+3:i+5]) - 0x100
+        timestamp = u64(data[i+5:i+12] + b'\0')
+        key_enc = data[i+15]
+        if key_enc >= 0x96  and key_enc <= 0x9f:
+            key = chr(key_enc - 0x66)
+        elif key_enc >= 0xbb  and key_enc <= 0xe0:
+            key = chr(key_enc + 0x7a - 0x100)
+        elif key_enc == 0x86:
+            key = " "
+        else:
+            key = "unknown"
+        print("{} \t {} \t Key = {}".format(seq_num, timestamp, key))
+        i += 17
 
-	elif data[i:i+3] == b"\x0a\x15\x08":
-		seq_num = u16(data[i+3:i+5]) - 0x100
-		timestamp = u64(data[i+5:i+12] + b'\0')
-		point_x = u32(data[i+15:i+19]) ^ 0xCAFEFAAA
-		point_y = u32(data[i+19:i+23]) ^ 0xCAFEFAAA
-		print("{} \t {} \t Mouse x = {}, y = {}".format(seq_num, timestamp, point_x, point_y))
-		clicks.append((point_x, point_y))
-		i += 23
+    elif data[i:i+3] == b"\x0a\x15\x08":
+        seq_num = u16(data[i+3:i+5]) - 0x100
+        timestamp = u64(data[i+5:i+12] + b'\0')
+        point_x = u32(data[i+15:i+19]) ^ 0xCAFEFAAA
+        point_y = u32(data[i+19:i+23]) ^ 0xCAFEFAAA
+        print("{} \t {} \t Mouse x = {}, y = {}".format(seq_num, timestamp, point_x, point_y))
+        clicks.append((point_x, point_y))
+        i += 23
 ```
 Okay, then I could parse the key log:
 ```
@@ -161,7 +169,7 @@ from malduck import *
 data = bytearray(unhex(open("screenshot_enc.hex", "r").read().replace("\n", "")))
 
 for i in  range(len(data) - 2, -1, -1):
-	data[i] = data[i] ^ data[i+1]
+    data[i] = data[i] ^ data[i+1]
 
 open("screenshot.jpg", "wb").write(data)
 ```
@@ -177,25 +185,25 @@ When I cleared the fog in my brain, I looked back at the start of the keylog: th
 ```python
 cnt = 1
 for i in  range(16, 50):
-	img = cv2.imread("./keyboard.png")
-	cv2.circle(img, clicks[i], 6, (0,0,255), -1)
-	cv2.imwrite("./imgs/tmp{}.jpg".format(cnt), img)
-	cnt += 1
+    img = cv2.imread("./keyboard.png")
+    cv2.circle(img, clicks[i], 6, (0,0,255), -1)
+    cv2.imwrite("./imgs/tmp{}.jpg".format(cnt), img)
+    cnt += 1
 ```
 But because they also switched to the number keyboard in between and press some numbers, I have to take 2 screenshots and plot them separately:
 ```python
 cnt = 1
 for i in  range(16, 37):
-	img = cv2.imread("./keyboard.png")
-	cv2.circle(img, clicks[i], 6, (0,0,255), -1)
-	cv2.imwrite("./imgs/tmp{}.jpg".format(cnt), img)
-	cnt += 1
+    img = cv2.imread("./keyboard.png")
+    cv2.circle(img, clicks[i], 6, (0,0,255), -1)
+    cv2.imwrite("./imgs/tmp{}.jpg".format(cnt), img)
+    cnt += 1
 
 for i in  range(37, 50):
-	img = cv2.imread("./keyboard2.png")
-	cv2.circle(img, clicks[i], 6, (0,0,255), -1)
-	cv2.imwrite("./imgs/tmp{}.jpg".format(cnt), img)
-	cnt += 1
+    img = cv2.imread("./keyboard2.png")
+    cv2.circle(img, clicks[i], 6, (0,0,255), -1)
+    cv2.imwrite("./imgs/tmp{}.jpg".format(cnt), img)
+    cnt += 1
 ```
 The password could be recovered as: `emergency password 641578642380`, but it still was incorrect. Therefore I asked the author of this challenge `@ks75vl` and he told me the there was actually one more key press before the first `e`, but I didn't found it (weird?), so I just used my instinct again and assume that it was a `Shift` key. So the correct password is: `Emergency password 641578642380`.
 
