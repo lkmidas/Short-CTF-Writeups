@@ -96,7 +96,7 @@ The decrypted lua code from `auto_9yin.dll` is well commented, and it is used to
 
 My solution was to run the lua script itself on the given key to get the flag. However, there were also some hiccups doing this:
 - The script requires some packages that is loaded somewhere else and I didn't have them, so I imple tried to remove all the `require()` calls.
-- Doing the above will result in the lua script missing the `hex` and the `bin` packages. 
+- Doing the above will result in the lua script missing the `hex` and the `bit` packages. 
 - I googles for those, but I can't find `hex`, so I looked in the script to find where it is used, and found out that it is simply use to convert the hex representation of the key into bytes. Therefore, I can do this in python, copy the result into lua and get rid of `hex`.
 - For `bit`, I found it on the Internet, so I simply copy and paste it into the same folder.
 
