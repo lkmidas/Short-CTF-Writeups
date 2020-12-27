@@ -2,7 +2,7 @@
 
 Short writeups for some challenges (mostly pwnable) in various CTFs that I find interesting and worthy of a writeup.
 
-## Current writeups
+## Current writeups (TOO LAZY TO UPDATE)
 | **CTF**      | **Year** | **Challenges**                                                                                                    | **Note**                                                |
 |--------------|----------|-------------------------------------------------------------------------------------------------------------------|---------------------------------------------------------|     
 | SECCON       | 2018     | [internet of seat](https://github.com/LKMDang/Short-CTF-Writeups/tree/master/seccon2018_internet_of_seat)         | IoT pwn                                                 |
