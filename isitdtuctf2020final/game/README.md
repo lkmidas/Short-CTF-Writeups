@@ -15,7 +15,7 @@
 3. Investigate the `lua` scripts => See some scripts that load `auto_main` and `auto_core`.
 4. Analyze the corresponding DLLs (and some others) => See the same structure, only differ is in the encrypted part.
 5. Decrypt the similar part => Get a `lua` function to decrypt the different parts.
-6. Decrypt the different part in `auto_9yin.dll` => Get the `lua` script that has the encrypt and decrypt routine.
+6. Decrypt the different part in `auto_9yin.dll` => Get the `lua` script that has the encryption and decryption routine.
 7. Use the script to decrypt the given key => Get flag.
 
 ## Optional: Install the game and Auto9Yin
@@ -92,7 +92,7 @@ This function is quite small. First it uses the same decryption routine that dec
 Disappointingly, decrypting these 2 DLLs only results in lua scripts that handle the in-game botting stuffs, there is no code in those scripts that take care of the key. My thought process then was to decrypt all of the DLLs to find what I seek. Of course though, I had to look at the DLLs that have the most interesting names first, so I instantly looked at `auto_9yin.dll`, and I did hit the jackpot.
 
 ## Running auto9_yin to decrypt the key
-The decrypted lua code from `auto_9yin.dll` is well commented, and it is used to handle everything about the key. Thereis a decrypt function in there, so firstly, I asked `@pcback` again to recode it into python. However, because of some differences between lua and python, he didn't succeed in doing that this time, so I have to find another way to do it.
+The decrypted lua code from `auto_9yin.dll` is well commented, and it is used to handle everything about the key. There is a decrypt function in there, so firstly, I asked `@pcback` again to recode it into python. However, because of some differences between lua and python, he didn't succeed in doing that this time, so I had to find another way to do it.
 
 My solution was to run the lua script itself on the given key to get the flag. However, there were also some hiccups doing this:
 - The script requires some packages that is loaded somewhere else and I didn't have them, so I simply tried to remove all the `require()` calls.
@@ -104,6 +104,7 @@ With the above setups, I could successfully run the lua script to get the flag:
 ```
 danchoihephoco,1922762076,This key was used as a real world challenge for a cyber security contest (see https://www.facebook.com/isitdtu/). If you are owner of this product, please do not share or leak it, thanks a lot. ISITDTU{r34l_w0rd_1s_fUn_4nd_34sY_bUt_lu4_sUcKs}
 ```
+*Note:* Actually I forgot the technique of "googling the constant" when I was onsite at the competition. If I did a quick google search of the `delta = 0x9E3779B9` value in the script, I would have known that this encryption is `XTEA` and not have to waste time trying to recode/run the lua script.
 
 ## Appendix
 The script for decrypting both the similar and the different parts in DLLs is `decrypt.py`.
