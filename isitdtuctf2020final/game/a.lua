@@ -1,4 +1,4 @@
-package.path = package.path .. ";/home/midas/bit.lua"
+package.path = package.path .. ";/path/to/bit.lua"
 require 'bit.lua'
 delta = 0x9E3779B9
 
