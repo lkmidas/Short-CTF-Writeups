@@ -1,9 +1,9 @@
 # ISITDTU CTF 2020 Final - Game
 
 ## Introduction
-**Given files:** `Auto9Yin.2.72.17.zip`.
+**Given files:** `Auto9Yin.2.72.17.zip` (download [here](https://github.com/CTF-STeam/ctf-writeups/blob/master/2020/ISITDTU%20Finals/game/Auto9Yin.2.72.17.zip)).
 
-**Description:** In this challenge, our goal is to decrypt this key: `C2BAC628EC275E5F9D64A403A57AF4E9880BA46AE78560CC0B26F6D630C93A5BC3153098F77E7A871FE7C7484F72F36BC42BFA9E0E331C186E33646BDC61C9F21958CBE5DC6468EB84676F99C2504BA7B8BA29463E9C481C1182C4A718D2E45EB2ACEA664D10249E8F34DDA801E5692ECB3E4E34375589D38CCE4018A004C7EC9C6805C27A2D37C45290C38F7D7CE679762567DB2FDD44309F74365C18310673F6B98D99A1A27E2204555B3D12113CC4C72B665548C3738BE2E310206A68E89A1E5BE492AC00ABC22ACA5099FDF7E1426D82AF89AF53D8A84255002D166352890DA2FE8881450D836FC95AE28C9F604ACB00D3CF95CB2AAF1445F0D1234DE1BAD13739E6D18B3D0718ABD10C259635B6`
+**Description:** Decrypt this: `C2BAC628EC275E5F9D64A403A57AF4E9880BA46AE78560CC0B26F6D630C93A5BC3153098F77E7A871FE7C7484F72F36BC42BFA9E0E331C186E33646BDC61C9F21958CBE5DC6468EB84676F99C2504BA7B8BA29463E9C481C1182C4A718D2E45EB2ACEA664D10249E8F34DDA801E5692ECB3E4E34375589D38CCE4018A004C7EC9C6805C27A2D37C45290C38F7D7CE679762567DB2FDD44309F74365C18310673F6B98D99A1A27E2204555B3D12113CC4C72B665548C3738BE2E310206A68E89A1E5BE492AC00ABC22ACA5099FDF7E1426D82AF89AF53D8A84255002D166352890DA2FE8881450D836FC95AE28C9F604ACB00D3CF95CB2AAF1445F0D1234DE1BAD13739E6D18B3D0718ABD10C259635B6`
 
 **Category:** Reverse engineering
 
@@ -96,7 +96,7 @@ The decrypted lua code from `auto_9yin.dll` is well commented, and it is used to
 
 My solution was to run the lua script itself on the given key to get the flag. However, there were also some hiccups doing this:
 - The script requires some packages that is loaded somewhere else and I didn't have them, so I imple tried to remove all the `require()` calls.
-- Doing the above will result in the lua script missing the `hex` and the `bit` packages. 
+- Doing the above will result in the lua script missing the `hex` and the `bin` packages. 
 - I googles for those, but I can't find `hex`, so I looked in the script to find where it is used, and found out that it is simply use to convert the hex representation of the key into bytes. Therefore, I can do this in python, copy the result into lua and get rid of `hex`.
 - For `bit`, I found it on the Internet, so I simply copy and paste it into the same folder.
 
