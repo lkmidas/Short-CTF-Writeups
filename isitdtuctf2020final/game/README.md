@@ -91,11 +91,11 @@ This function is quite small. First it uses the same decryption routine that dec
 
 Disappointingly, decrypting these 2 DLLs only results in lua scripts that handle the in-game botting stuffs, there is no code in those scripts that take care of the key. My thought process then was to decrypt all of the DLLs to find what I seek. Of course though, I had to look at the DLLs that have the most interesting names first, so I instantly looked at `auto_9yin.dll`, and I did hit the jackpot.
 
-## Running auto9yin to decrypt the key
+## Running auto9_yin to decrypt the key
 The decrypted lua code from `auto_9yin.dll` is well commented, and it is used to handle everything about the key. Thereis a decrypt function in there, so firstly, I asked `@pcback` again to recode it into python. However, because of some differences between lua and python, he didn't succeed in doing that this time, so I have to find another way to do it.
 
 My solution was to run the lua script itself on the given key to get the flag. However, there were also some hiccups doing this:
-- The script requires some packages that is loaded somewhere else and I didn't have them, so I imple tried to remove all the `require()` calls.
+- The script requires some packages that is loaded somewhere else and I didn't have them, so I simply tried to remove all the `require()` calls.
 - Doing the above will result in the lua script missing the `hex` and the `bin` packages. 
 - I googles for those, but I can't find `hex`, so I looked in the script to find where it is used, and found out that it is simply use to convert the hex representation of the key into bytes. Therefore, I can do this in python, copy the result into lua and get rid of `hex`.
 - For `bit`, I found it on the Internet, so I simply copy and paste it into the same folder.
