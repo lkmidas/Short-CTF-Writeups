@@ -131,7 +131,7 @@ log.info("libc: {}".format(hex(l.address)))
 ```
 
 ## Tcache poisoning
-Freeing the two `victim` chunks and we can easily overwrite their `fd` pointer, classic `tcache poisoning`. With that, I now can overwrite `__free_hook` and also have all the leaked addresses in my hands. I could just use my ROP chain that I explained [here](https://blog.efiens.com/post/heap-seccomp-rop/) to read the flag. Note that the `payload` must be put into a cache's `name`, not `content`, because the `name` is what actually got `free()` first when we call `erase`.
+Freeing the two `victim` chunks and we can easily overwrite their `fd` pointer, classic `tcache poisoning`. With that, I then could overwrite `__free_hook` and also had all the leaked addresses in my hands. I could just use my ROP chain that I explained [here](https://blog.efiens.com/post/heap-seccomp-rop/) to read the flag. Note that the `payload` must be put into a cache's `name`, not `content`, because the `name` is what actually got `free()` first when we call `erase`.
 ```python
 # Erase victims, overwrite victim2's fd to __free_hook
 erase("victim1")
