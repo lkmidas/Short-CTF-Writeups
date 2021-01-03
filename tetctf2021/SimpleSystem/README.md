@@ -54,7 +54,7 @@ struct str_note
 }
 ```
 
-The bug here is that even though in `signout & delete` the program tries to acquire the `mutex_lock`, it doesn't call `sem_wait()` on the `semaphore` on the way out and goes straight into `sem_destroy()`. This way, if we go into `sleep mode`, the `mutex_lock` will be acquired and `sem_post()` will increment `semaphore` before `sleep()`, after that when we choose to `signout & delete`, this thread must wait for the sleeping thread to unlock its `mutex_lock` before it can execute, but the thing is on the main thread after `signout & delete`, it doesn't need to wait for the `semaphore` of the sleeping thread to be incremented before proceeding, therefore it will signout to the main menu on the *main thread*, while the *deleting thread* is still waiting for the `mutex_lock`. In short, we have 3 threads here:
+The bug here is that even though in `signout & delete` the program tries to acquire the `mutex_lock`, it doesn't call `sem_wait()` on the `semaphore` on the way out and goes straight into `sem_destroy()`. This way, if we go into `sleep mode`, the `mutex_lock` will be acquired and `sem_post()` will increment `semaphore` before `sleep()`, after that when we choose to `signout & delete`, this thread must wait for the sleeping thread to unlock its `mutex_lock` before it can execute, but the thing is on the main thread after `signout & delete`, it doesn't need to wait for the `semaphore` of the *sleeping thread* to be incremented before proceeding, therefore it will signout to the main menu on the *main thread*, while the *deleting thread* is still waiting for the `mutex_lock`. In short, we have 3 threads here:
 - the *sleeping thread* holding the `mutex_lock`, incrementing the `semaphore`.
 - the *deleting thread* waiting for `mutex_lock` to be released to proceed.
 - the *main thread*, which should be waiting for the `semaphore`, is instead ignoring it and signout to main menu.
@@ -73,7 +73,7 @@ log.info("libc: {}".format(hex(l.address)))
 ```
 
 ## Exploit the multithreaded heap
-The exploitation path is quite clear then: if we can `add` a note exactly the same size as a `session` struct, then it will be allocated add the freed `session` we are currently in and we can overwrite everything in it. But here is the big problem: Each thread will `malloc()` into its own `heap arena`, so initially, it seems like there are no way to `malloc()` into the `main arena` from another thread. 
+The exploitation path is quite clear then: if we can `add` a note exactly the same size as a `session` struct, then it will be allocated at the freed `session` we are currently in and we can overwrite everything in it. But here is the big problem: Each thread will `malloc()` into its own `heap arena`, so initially, it seems like there are no way to `malloc()` into the `main arena` from another thread. 
 
 That's when the **hint** comes in handy. By googling about this multithreading heap management stuff, I came into [this doc about MallocInternals](https://sourceware.org/glibc/wiki/MallocInternals). It says that the maximum number of heap arenas is `8 * #processors`. After all the arenas have been allocated, threads will try to reuse one of the other arenas. This is so nice because we can use `sleep mode` to create a lot of hanging threads, then try to `malloc()` into the `main arena` in the next (the author is nice enough to even make a call to `malloc()` in `sleep mode`). That's exactly what I did, even though the intended way is to read `/proc/cpuinfo` to know the number of processors, I just assumed that it's 1 and try it out (if it's not I could always bruteforce it, can't be too big anyway). Therefore I created 8 sleeping threads:
 ```python
@@ -109,7 +109,7 @@ log.info("heap: {}".format(hex(heap)))
 I used this note to overwrite `fullname` to a pointer to the `session list` (the binary has `No PIE`) to leak `heap` address. I also had to make sure that the other overwritten fields of `session` are acceptable by the process, especially the `mutex_lock` one.
 
 ## Overwrite GOT and get shell
-Now I can use `edit` to overwrite `str_session->head` to the start of `session` struct, where I created a fake `note` whose `str_note->content` points to `atoi@GOT`. Then editting this note again to overwrite `atoi@GOT` to `system`. For the next prompt the make a choice to the options, I could just pass `sh` to it, then `atoi("sh")` will be called, which actually is `system("sh")` now.
+Now I can use `edit` to overwrite `str_session->head` to the start of `session` struct, where I created a fake `note` whose `str_note->content` points to `atoi@GOT`. Then editting this note again to overwrite `atoi@GOT` to `system`. For the next prompt to make a choice to the options, I could just pass `sh` to it, then `atoi("sh")` will be called, which actually is `system("sh")` now.
 ```python
 # Edit to point to atoi@GOTS
 payload2 = p64(0) + p64(0x90)
