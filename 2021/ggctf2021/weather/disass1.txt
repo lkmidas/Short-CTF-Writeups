@@ -1,0 +1,19 @@
+52        %0.4096hhM                    LOAD REGS[0], MEM[4096]       
+62        %0.255llI                     AND REGS[0], 255              
+71        %1.0lM                        LOAD REGS[1], REGS[0]         
+77        %1.8llL                       LSHIFT REGS[1], 8             
+84        %0.1lU                        OR REGS[0], REGS[1]           
+90        %1.0lM                        LOAD REGS[1], REGS[0]         
+96        %1.16llL                      LSHIFT REGS[1], 16            
+104       %0.1lU                        OR REGS[0], REGS[1]           
+110       %1.200llM                     LOAD REGS[1], 200             
+119       %2.1788llM                    LOAD REGS[2], 1788            
+129       %7C                           CALL REGS[-1], 7              
+132       %-6144.1701736302llM          LOAD MEM[6144], 1701736302    
+152       %0.200hhM                     LOAD REGS[0], MEM[200]        
+161       %0.255llI                     AND REGS[0], 255              
+170       %0.37llO                      SUB REGS[0], 37               
+178       %0200.0C                      CEZ REGS[0], 200              
+186       RET
+
+Checking

@@ -1,5 +1,3 @@
-# CTF Writeups
+# Short CTF Writeups/Solvers
 
-My writeups for challenges that I found interesting, too lazy to update a complete list of writeups tho.
-
-Deprecated, moved all writeups to my blog.
+Just a place to put all my small writeups or solvers for interesting CTF challenges that I'm too lazy to write a complete writeup on my blog for.

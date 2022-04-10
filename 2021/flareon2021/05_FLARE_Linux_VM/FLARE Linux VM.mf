@@ -1,0 +1,2 @@
+SHA256(FLARE Linux VM.ovf)= fda88adc8256070e21aa34e2ad5cfe30bca1276fd8bba42c53ff0868e1a0ad6f
+SHA256(FLARE_Linux_VM-disk1.vmdk)= 01f13de25ce4bf28efb7a8e6b109d8999dc3e73544c0dda248222b179c9aab81
