@@ -1,0 +1,3 @@
+[FLARE Team]  Hey IR Team, it looks like this sample has some other binary that might 
+              interact with it, do you have any other files that might be of help.
+			  ,[IR Team]     Nope, sorry this is all we got from the client, let us know what you got.
